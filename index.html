@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<h1> ～～～ Network Programming Homework 1 ～～～</h1>
+		<style>
+			body {
+				background-color: black;
+				color: white;
+			}
+			h1 {
+				margin:10px; 
+				background-color: none;
+				color: white;
+				font-family: "Roboto Mono", monospace;
+				font-size: 50px;
+				padding: 20px;
+				border-style: none;
+				text-align: center;
+			}
+			img {
+				margin-top: 10px;
+				margin-left: 10px;
+				display: block;
+			}
+			div {
+				margin-left: 20px;
+				margin-bottom: 20px;
+			}
+			p {
+				color: white;
+				font-family: "Roboto Mono", monospace;
+			}
+		</style>
+
+		<body>
+			<div class="picture" id="mypic">
+				<img src="CCU.jfif" width="250" height="250" padding="20px" id="pic1">
+			</div>
+			<div>
+				<input type="file" id="file-uploader" accept=".jpg, .jpeg, .png">
+				<div id="image-grid"></div>
+				<p id="feedback"></p>
+			</div>
+
+			<div>
+				<label id="progress-label" for="progress"></label>
+				<progress id="progress" value="0" max="100"></progress>
+			</div>
+
+			<script>
+				const fileUploader = document.getElementById('file-uploader');
+				const progress = document.getElementById('progress');
+				const feedback = document.getElementById('feedback');
+				const imageGrid = document.getElementById('image-grid');
+				const reader = new FileReader();
+
+				fileUploader.addEventListener('change', (event) => {
+					const files = event.target.files;
+					const file = files[0];
+					reader.readAsDataURL(file);
+					console.log('files', files);
+
+					reader.addEventListener('progress', (event) => {
+						if (event.loaded && event.total) {
+							const percent = (event.loaded / event.total) * 100;
+							progress.value = percent;
+							document.getElementById('progress-label').innerHTML = Math.round(percent) + '%';
+
+							if (percent === 100) {
+								let msg = `<span style="color:green;">File <u><b>${file.name}</b></u> has been uploaded successfully.</span>`;
+								feedback.innerHTML = msg;
+							}
+						}
+					});
+
+					reader.addEventListener('load', (event) => {
+						const img = document.createElement('img');
+						imageGrid.appendChild(img);
+						img.src = event.target.result;
+						img.alt = file.name;
+					});
+				});
+			</script>
+		</body>
+	</head>
+</html>
